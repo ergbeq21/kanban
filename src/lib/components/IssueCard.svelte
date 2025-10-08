@@ -15,7 +15,7 @@
 
     <p class="text-gray-700 text-xs mb-2 line-clamp-2">{issue.description}</p>
 
-    <div class="grid grid-cols-2 gap-1 text-[11px] text-gray-500">
+    <div class="grid grid-cols-1 gap-1 text-[11px] text-gray-500">
         <div>
             <span class="font-medium">Created:</span> 
             {new Date(issue.createdAt).toLocaleDateString()}

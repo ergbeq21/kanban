@@ -1,6 +1,6 @@
 <script>
+    import { AlertCircle } from "lucide-svelte";
     let { doList = $bindable(), createIssue = $bindable(false) } = $props();
-
 
     let title = $state("");
     let description = $state("");
@@ -8,8 +8,10 @@
     let storyPoints = $state("");
     let priority = $state("Low");
 
-    function handleCreate() {
+    let isValid = $state(false);
+    let dueDateError = $state("");
 
+    function handleCreate() {
         let issue = {
             title,
             description,
@@ -20,20 +22,41 @@
         };
 
         doList = [...doList, issue];
-
         createIssue = false;
-
 
         title = "";
         description = "";
         dueDate = "";
         storyPoints = "";
         priority = "Low";
+        dueDateError = "";
     }
+
+    function checkDueDate(dateString) {
+        const now = new Date();
+        const selectedDate = new Date(dateString);
+
+        if (selectedDate < now) {
+            dueDateError = "Due date cannot be in the past";
+        } else {
+            dueDateError = "";
+        }
+    }
+
+    $effect(() => {
+        isValid = title !== "" && description !== "" && dueDate !== "" && storyPoints !== "" && priority !== "";
+
+        if (dueDate !== "") {
+            checkDueDate(dueDate);
+        } else {
+            dueDateError = "";
+        }
+    });
 </script>
 
+
 <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-    <div class="bg-white rounded-2xl shadow-xl p-6 w-[400px]">
+    <div class="bg-white rounded-2xl shadow-xl p-6 w-[500px]">
         <h2 class="text-xl font-bold mb-4">Create Issue</h2>
 
         <div class="space-y-3">
@@ -52,6 +75,13 @@
                 type="date"
                 bind:value={dueDate}
                 class="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+            {#if dueDateError !== ""}
+                <p class="text-red-600 text-sm flex items-center gap-1 ml-2">
+                    <AlertCircle size={16} class="flex-shrink-0" />
+                    {dueDateError}
+                </p>
+            {/if}
 
             <input 
                 type="number"
@@ -75,8 +105,9 @@
                 Cancel
             </button>
             <button 
+                disabled={!isValid || dueDateError != ""}
                 onclick={handleCreate}
-                class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+                class={`${isValid && dueDateError == "" ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300'} px-4 py-2 rounded-lg  text-white transition`}>
                 Create
             </button>
         </div>
