@@ -21,14 +21,40 @@
             if (issue?.dueDate) {
                 const now = new Date();
                 const dueDate = new Date(issue.dueDate);
-
                 isDueDateWarning = dueDate < now;
             } else {
                 isDueDateWarning = false;
             }
         }
-
 	});
+
+    //notification
+
+	async function notify() {
+
+        console.log("is clicked")
+
+        let permission = Notification.permission;
+
+        console.log(permission);
+        
+        if(permission !== "granted"){
+            permission = await Notification.requestPermission();
+        }
+
+        if( permission === "granted"){
+            let test = new Notification("Task " + issue?.title + " is completed",{
+                body: issue?.description
+            })
+        }
+    }
+
+    $effect(()=>{
+        if(lane === "done"){
+            notify();
+        }
+    })
+
 </script>
 
 <article
@@ -45,7 +71,12 @@
 	</button>
 
 	<div class="flex justify-between items-center mb-1">
-		<h3 class="text-sm font-semibold truncate">{issue.title}</h3>
+		<div class="flex items-center gap-1">
+			<h3 class="text-sm font-semibold truncate">{issue.title}</h3>
+			{#if isDueDateWarning}
+				<span class="text-[10px] text-red-600 font-semibold">(Due date is over)</span>
+			{/if}
+		</div>
 		<span
 			class="px-1.5 py-0.5 text-[10px] rounded
 				{issue.priority === 'High' ? 'bg-red-100 text-red-600' : ''}
@@ -56,7 +87,6 @@
 	</div>
 
 	<p class="text-gray-700 text-xs mb-2 line-clamp-2">{issue.description}</p>
-
 
 	<div class="grid grid-cols-1 gap-1 text-[11px] text-gray-500">
 		<div>
@@ -71,10 +101,4 @@
 			<span class="font-medium">Points:</span> {issue.storyPoints}
 		</div>
 	</div>
-
-	{#if isDueDateWarning}
-		<div class="mt-2 text-[11px] text-red-600 font-semibold">
-			Due date ist vorbei!
-		</div>
-	{/if}
 </article>
