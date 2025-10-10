@@ -1,5 +1,7 @@
 <script>
     import { AlertCircle } from "lucide-svelte";
+    import { v1 as uuidv1 } from 'uuid';
+
     let { doList = $bindable(), createIssue = $bindable(false) } = $props();
 
     let title = $state("");
@@ -13,6 +15,7 @@
 
     function handleCreate() {
         let issue = {
+            id: uuidv1(),
             title,
             description,
             dueDate,
