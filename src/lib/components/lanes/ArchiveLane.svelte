@@ -14,7 +14,7 @@ class="bg-gray-50 border border-gray-200 rounded-lg p-3 w-full flex flex-col gap
         <p class="text-gray-400 text-xs italic text-center py-4">No tasks</p>
     {:else}
         {#each archiveList as issue}
-            <IssueCard {issue} bind:list={archiveList} {startFrom} lang="archived"/>
+            <IssueCard {issue} bind:list={archiveList} {startFrom} lane="archived"/>
         {/each}
     {/if}
 </section>

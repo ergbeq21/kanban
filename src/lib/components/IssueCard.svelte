@@ -1,5 +1,6 @@
 <script>
 	import { Trash2 } from 'lucide-svelte';
+
 	let { issue, list = $bindable(), startFrom, lane } = $props();
 
 	function removeIssue() {
@@ -12,6 +13,22 @@
 		done: 'border-green-300 bg-green-50',
 		archived: 'border-gray-300 bg-gray-50 text-gray-400'
 	};
+
+	let isDueDateWarning = $state(false);
+
+	$effect(() => {
+        if(lane == "do" || lane == "doing"){
+            if (issue?.dueDate) {
+                const now = new Date();
+                const dueDate = new Date(issue.dueDate);
+
+                isDueDateWarning = dueDate < now;
+            } else {
+                isDueDateWarning = false;
+            }
+        }
+
+	});
 </script>
 
 <article
@@ -20,14 +37,12 @@
 	class={`rounded-lg border p-2 w-full relative group transition-all duration-200
 		${laneStyles[lane] || 'border-gray-200 bg-white'}`}>
 
-
 	<button
 		onclick={removeIssue}
 		class="absolute bottom-2 right-2 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-600"
 		title="Delete Issue">
 		<Trash2 size={16} />
 	</button>
-
 
 	<div class="flex justify-between items-center mb-1">
 		<h3 class="text-sm font-semibold truncate">{issue.title}</h3>
@@ -39,7 +54,6 @@
 			{issue.priority}
 		</span>
 	</div>
-
 
 	<p class="text-gray-700 text-xs mb-2 line-clamp-2">{issue.description}</p>
 
@@ -57,4 +71,10 @@
 			<span class="font-medium">Points:</span> {issue.storyPoints}
 		</div>
 	</div>
+
+	{#if isDueDateWarning}
+		<div class="mt-2 text-[11px] text-red-600 font-semibold">
+			Due date ist vorbei!
+		</div>
+	{/if}
 </article>

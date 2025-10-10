@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from "svelte";
 	import AddNewIssue from "$lib/components/AddNewIssue.svelte";
 	import ArchiveLane from "$lib/components/lanes/ArchiveLane.svelte";
 	import DoingLane from "$lib/components/lanes/DoingLane.svelte";
@@ -9,7 +10,24 @@
 	let doingList = $state([]);
 	let doneList = $state([]);
 	let archiveList = $state([]);
+
 	let createIssue = $state(false);
+
+    onMount(() => {
+		doList = JSON.parse(localStorage.getItem("doList") || "[]");
+		doingList = JSON.parse(localStorage.getItem("doingList") || "[]");
+		doneList = JSON.parse(localStorage.getItem("doneList") || "[]");
+		archiveList = JSON.parse(localStorage.getItem("archiveList") || "[]");
+	});
+
+    $effect(()=>{
+        localStorage.setItem("doList", JSON.stringify(doList));
+	    localStorage.setItem("doingList", JSON.stringify(doingList));
+	    localStorage.setItem("doneList", JSON.stringify(doneList));
+	    localStorage.setItem("archiveList", JSON.stringify(archiveList));
+    })
+
+
 
 	function dragOver(event) {
 		event.preventDefault();
