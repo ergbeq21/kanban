@@ -1,5 +1,6 @@
 <script>
-	import { Trash2, Share2 } from 'lucide-svelte';
+	import { exportAsICS } from '$lib/utils/export';
+	import { Trash2, Share2, Calendar } from 'lucide-svelte';
 	import { format, formatDistanceToNow, isPast } from 'date-fns';
 
 	let { issue, list = $bindable(), startFrom, lane } = $props();
@@ -18,46 +19,37 @@
 	let isDueDateWarning = $state(false);
 
 	$effect(() => {
-        if(lane == "do" || lane == "doing"){
-            if (issue?.dueDate) {
-                const now = new Date();
-                const dueDate = new Date(issue.dueDate);
-                isDueDateWarning = dueDate < now;
-            } else {
-                isDueDateWarning = false;
-            }
-        }
+		if (lane == "do" || lane == "doing") {
+			if (issue?.dueDate) {
+				const now = new Date();
+				const dueDate = new Date(issue.dueDate);
+				isDueDateWarning = dueDate < now;
+			} else {
+				isDueDateWarning = false;
+			}
+		}
 	});
 
-    //notification
-
+	// notification
 	async function notify() {
+		let permission = Notification.permission;
+		if (permission !== "granted") {
+			permission = await Notification.requestPermission();
+		}
+		if (permission === "granted") {
+			new Notification("Task " + issue?.title + " is completed", {
+				body: issue?.description
+			});
+		}
+	}
 
-        console.log("is clicked")
+	$effect(() => {
+		if (lane === "done") {
+			notify();
+		}
+	});
 
-        let permission = Notification.permission;
-
-        console.log(permission);
-        
-        if(permission !== "granted"){
-            permission = await Notification.requestPermission();
-        }
-
-        if( permission === "granted"){
-            let test = new Notification("Task " + issue?.title + " is completed",{
-                body: issue?.description
-            })
-        }
-    }
-
-    $effect(()=>{
-        if(lane === "done"){
-            notify();
-        }
-    })
-
-
-	//share 
+	// share 
 	async function share() {
 		await navigator.share({
 			title: issue?.title,
@@ -65,13 +57,19 @@
 		});
 	}
 
+	//export as ICS
+	function handleExport() {
+		exportAsICS(issue);
+	}
+		
 </script>
 
 <article
 	ondragstart={(event) => startFrom(issue, event)}
 	draggable="true"
-	class={`rounded-lg border p-3 w-full relative group transition-all duration-200
-		${laneStyles[lane] || 'border-gray-200 bg-white'}`}>
+	class={`
+	${isDueDateWarning ? 'border-red-300 bg-red-50' : `${laneStyles[lane] || 'border-gray-200 bg-white'}`}
+	 rounded-lg border p-3 w-full relative group transition-all duration-200`}>
 
 	<button
 		onclick={removeIssue}
@@ -87,7 +85,7 @@
 				<span class="text-[10px] text-red-600 font-semibold">(Due date is over)</span>
 			{/if}
 		</div>
-		<div class="flex flex-row gap-1">
+		<div class="flex flex-row gap-1 items-center">
 			<span
 				class="px-1.5 py-0.5 text-[10px] rounded
 					{issue.priority === 'High' ? 'bg-red-100 text-red-600' : ''}
@@ -95,7 +93,12 @@
 					{issue.priority === 'Low' ? 'bg-green-100 text-green-600' : ''}">
 				{issue.priority}
 			</span>
-			<button onclick={share}>
+
+			<button onclick={handleExport} title="Export as .ics">
+				<Calendar size={13}/>
+			</button>
+			
+			<button onclick={share} title="Share">
 				<Share2 size={13}/>
 			</button>
 		</div>

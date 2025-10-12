@@ -56,8 +56,7 @@
         {#each paginatedList as issue (issue)}
             <IssueCard {issue} bind:list={list} {startFrom} {lane} />
         {/each}
-        {#if totalPages > 1}
-            <PaginationControlls {prevPage} {totalPages} {currentPage} {nextPage}/>
-        {/if}
+        
+        <PaginationControlls {prevPage} {totalPages} {currentPage} {nextPage}/>
     {/if}
 </section>
