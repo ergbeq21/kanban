@@ -1,10 +1,7 @@
 <script>
     import { onMount } from "svelte";
 	import AddNewIssue from "$lib/components/AddNewIssue.svelte";
-	import ArchiveLane from "$lib/components/lanes/ArchiveLane.svelte";
-	import DoingLane from "$lib/components/lanes/DoingLane.svelte";
-	import DoLane from "$lib/components/lanes/DoLane.svelte";
-	import DoneLane from "$lib/components/lanes/DoneLane.svelte";
+	import LaneCard from "$lib/components/LaneCard.svelte";
 
 	let doList = $state([]);
 	let doingList = $state([]);
@@ -106,8 +103,14 @@
 </header>
 
 <main class="p-4 flex gap-4 w-full h-[calc(100vh-80px)] overflow-x-auto">
-	<DoLane class="flex-1" bind:doList {dragOver} {dropToDo} {startFrom} />
-	<DoingLane class="flex-1" bind:doingList {dragOver} {dropToDoing} {startFrom}/>
-	<DoneLane class="flex-1" bind:doneList {dragOver} {dropToDone} {startFrom}/>
-	<ArchiveLane class="flex-1" bind:archiveList {dragOver} {dropToArchived}{startFrom}/>
+
+	<!--Do list-->
+	<LaneCard bind:list={doList} {dragOver} dropTo={dropToDo} {startFrom} lane="do" title="To Do"/>
+	<!--Doing list-->
+	<LaneCard bind:list={doingList} {dragOver} dropTo={dropToDoing} {startFrom} lane="doing" title="Doing"/>
+	<!--Done list-->
+	<LaneCard bind:list={doneList} {dragOver} dropTo={dropToDone} {startFrom} lane="done" title="Done"/>
+	<!--Archived list-->
+	<LaneCard bind:list={archiveList} {dragOver} dropTo={dropToArchived} {startFrom} lane="archived" title="Archived"/>
+
 </main>

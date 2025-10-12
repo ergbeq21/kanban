@@ -1,5 +1,6 @@
 <script>
 	import { Trash2, Share2 } from 'lucide-svelte';
+	import { format, formatDistanceToNow, isPast } from 'date-fns';
 
 	let { issue, list = $bindable(), startFrom, lane } = $props();
 
@@ -105,11 +106,14 @@
 	<div class="grid grid-cols-1 gap-1 text-[11px] text-gray-500">
 		<div>
 			<span class="font-medium">Created:</span>
-			{new Date(issue.createdAt).toLocaleDateString()}
+			{issue.createdAt ? format(new Date(issue.createdAt), "PP") : '—'}
+			<span class="text-gray-400"> ({formatDistanceToNow(new Date(issue.createdAt))} ago)</span>
 		</div>
 		<div>
 			<span class="font-medium">Due:</span>
-			{issue.dueDate ? new Date(issue.dueDate).toLocaleDateString() : '—'}
+			{issue.dueDate
+				? `${format(new Date(issue.dueDate), "PP")} (${formatDistanceToNow(new Date(issue.dueDate))})`
+				: '—'}
 		</div>
 		<div>
 			<span class="font-medium">Points:</span> {issue.storyPoints}
