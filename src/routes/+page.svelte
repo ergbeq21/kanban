@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
 	import AddNewIssue from "$lib/components/AddNewIssue.svelte";
 	import LaneCard from "$lib/components/lanes/LaneCard.svelte";
+	import Header from "$lib/components/Header.svelte";
 
 	let doList = $state([]);
 	let doingList = $state([]);
@@ -92,13 +93,8 @@
 	<AddNewIssue bind:doList bind:createIssue />
 {/if}
 
-<header class="w-full flex items-center justify-end p-4 bg-gray-100 shadow">
-	<button
-		class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-		onclick={() => (createIssue = true)}>
-		Add Task
-	</button>
-</header>
+
+<Header bind:createIssue/>
 
 <main class="p-4 flex gap-4 w-full h-[calc(100vh-80px)] overflow-x-auto">
 
