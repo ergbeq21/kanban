@@ -1,5 +1,5 @@
 <script>
-	import { Trash2 } from 'lucide-svelte';
+	import { Trash2, Share2 } from 'lucide-svelte';
 
 	let { issue, list = $bindable(), startFrom, lane } = $props();
 
@@ -55,6 +55,15 @@
         }
     })
 
+
+	//share 
+	async function share() {
+		await navigator.share({
+			title: issue?.title,
+			text: issue?.description || "No issue available",
+		});
+	}
+
 </script>
 
 <article
@@ -77,13 +86,18 @@
 				<span class="text-[10px] text-red-600 font-semibold">(Due date is over)</span>
 			{/if}
 		</div>
-		<span
-			class="px-1.5 py-0.5 text-[10px] rounded
-				{issue.priority === 'High' ? 'bg-red-100 text-red-600' : ''}
-				{issue.priority === 'Medium' ? 'bg-yellow-100 text-yellow-600' : ''}
-				{issue.priority === 'Low' ? 'bg-green-100 text-green-600' : ''}">
-			{issue.priority}
-		</span>
+		<div class="flex flex-row gap-1">
+			<span
+				class="px-1.5 py-0.5 text-[10px] rounded
+					{issue.priority === 'High' ? 'bg-red-100 text-red-600' : ''}
+					{issue.priority === 'Medium' ? 'bg-yellow-100 text-yellow-600' : ''}
+					{issue.priority === 'Low' ? 'bg-green-100 text-green-600' : ''}">
+				{issue.priority}
+			</span>
+			<button onclick={share}>
+				<Share2 size={13}/>
+			</button>
+		</div>
 	</div>
 
 	<p class="text-gray-700 text-xs mb-2 line-clamp-2">{issue.description}</p>
