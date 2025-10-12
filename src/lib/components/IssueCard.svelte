@@ -70,7 +70,7 @@
 <article
 	ondragstart={(event) => startFrom(issue, event)}
 	draggable="true"
-	class={`rounded-lg border p-2 w-full relative group transition-all duration-200
+	class={`rounded-lg border p-3 w-full relative group transition-all duration-200
 		${laneStyles[lane] || 'border-gray-200 bg-white'}`}>
 
 	<button

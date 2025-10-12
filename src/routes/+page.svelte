@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
 	import AddNewIssue from "$lib/components/AddNewIssue.svelte";
-	import LaneCard from "$lib/components/LaneCard.svelte";
+	import LaneCard from "$lib/components/lanes/LaneCard.svelte";
 
 	let doList = $state([]);
 	let doingList = $state([]);
@@ -23,8 +23,6 @@
 	    localStorage.setItem("doneList", JSON.stringify(doneList));
 	    localStorage.setItem("archiveList", JSON.stringify(archiveList));
     })
-
-
 
 	function dragOver(event) {
 		event.preventDefault();
