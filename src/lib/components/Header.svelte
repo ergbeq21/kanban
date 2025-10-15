@@ -37,7 +37,7 @@
 		{country}
 	</div>
 	<button
-		class="px-4 py-2 border border-blue-700 cursor-pointer rounded text-blue-700 transition"
+		class="px-4 py-2 border border-gray-700 cursor-pointer rounded text-gray-700 transition"
 		onclick={() => (createIssue = true)}>
 		Add Task
 	</button>

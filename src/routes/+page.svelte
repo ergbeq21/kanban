@@ -95,7 +95,6 @@
 
 
 <Header bind:createIssue/>
-
 <main class="p-4 flex gap-4 w-full h-[calc(100vh-80px)] overflow-x-auto">
 
 	<!--Do list-->

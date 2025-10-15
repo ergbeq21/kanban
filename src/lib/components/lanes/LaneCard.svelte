@@ -2,7 +2,8 @@
     import IssueCard from "../IssueCard.svelte";
     import { isPast } from "date-fns";
     import PaginationControlls from "./PaginationControlls.svelte";
-    import { ListChecks, Target, BarChart2, AlertTriangle, Search, X } from "lucide-svelte";
+    import { ListChecks, Target, BarChart2, AlertTriangle, Search, X,ArrowUpWideNarrow } from "lucide-svelte";
+	import SortingOptions from "./SortingOptions.svelte";
 
     let { list = $bindable(), dragOver, dropTo, startFrom, lane, title } = $props();
 
@@ -10,8 +11,31 @@
     let search = $state('');
     const itemsPerPage = 3;
 
-    // Filter list based on search input
-    let filteredList = $derived(search ? list.filter(issue => issue.title?.toLowerCase().includes(search.toLowerCase())) : list );
+    const priorityOrder = { High: 1, Medium: 2, Low: 3 };
+
+    let sortBy = $state("createdAt"); 
+
+    //sort component
+    let sortComponent = $state(false);
+    function close(){
+        sortComponent = false;
+    }
+
+    let filteredList = $derived(
+        (search
+            ? list.filter(issue =>
+                issue.title?.toLowerCase().includes(search.toLowerCase())
+            )
+            : [...list]
+        ).sort((a, b) => {
+            if (sortBy === "priority") {
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            } else if (sortBy === "createdAt") {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            }
+            return 0;
+        })
+    );
 
     let count = $derived(filteredList.length);
     let totalPages = $derived(Math.ceil(filteredList.length / itemsPerPage));
@@ -58,6 +82,11 @@
 </script>
 
 
+{#if sortComponent}
+    <SortingOptions {close} bind:sortBy/>
+{/if}
+
+
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <section
     ondragover={dragOver}
@@ -83,24 +112,31 @@
         </span>
     </div>
 
-    <div class="relative">
-            <Search size={15} class="absolute left-2 top-2 text-gray-400" />
-            <input
-                bind:value={search}
-                type="text"
-                class="w-full h-8 pl-8 pr-8 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-blue-400"
-                placeholder="Search issues..."
-            />
-            {#if search}
-                <button
-                    type="button"
-                    onclick={clearSearch}
-                    class="absolute right-2 top-2 text-gray-400 hover:text-gray-600 transition"
-                    aria-label="Clear search"
-                >
-                    <X size={15} />
-                </button>
-            {/if}
+    <div class="flex flex-row gap-1 w-full items-center">
+        <div class="relative w-full">
+                <Search size={15} class="absolute left-2 top-2 text-gray-400" />
+                <input
+                    bind:value={search}
+                    type="text"
+                    class="w-full h-8 pl-8 pr-8 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-blue-400"
+                    placeholder="Search issues..."
+                />
+                {#if search}
+                    <button
+                        type="button"
+                        onclick={clearSearch}
+                        class="absolute right-2 top-2 text-gray-400 hover:text-gray-600 transition"
+                        aria-label="Clear search"
+                    >
+                        <X size={15} />
+                    </button>
+                {/if}
+        </div>
+        <div>
+            <button class="cursor-pointer text-gray-500" onclick={()=> sortComponent = true}>
+                <ArrowUpWideNarrow size="25"/>
+            </button>
+        </div>
     </div>
 
     {#if filteredList.length === 0}

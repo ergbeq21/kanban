@@ -1,7 +1,8 @@
 <script>
 	import { exportAsICS } from '$lib/utils/export';
-	import { Trash2, Share2, Calendar } from 'lucide-svelte';
+	import { Trash2, Share2, Calendar,SquarePen } from 'lucide-svelte';
 	import { format, formatDistanceToNow, isPast } from 'date-fns';
+	import EditIssue from './EditIssue.svelte';
 
 	let { issue, list = $bindable(), startFrom, lane } = $props();
 
@@ -61,7 +62,14 @@
 	function handleExport() {
 		exportAsICS(issue);
 	}
-		
+
+	let editIssue = $state(false);
+	let issueToEdit = $state(null);
+
+	function handleEdit(issue){
+		issueToEdit = issue;
+		editIssue = true;
+	}
 </script>
 
 <article
@@ -94,11 +102,15 @@
 				{issue.priority}
 			</span>
 
-			<button onclick={handleExport} title="Export as .ics">
+			<button title="Edit issue" class="cursor-pointer" onclick={()=> editIssue = true}>
+				<SquarePen size={13}/>
+			</button>
+
+			<button onclick={handleExport} title="Export as .ics" class="cursor-pointer">
 				<Calendar size={13}/>
 			</button>
-			
-			<button onclick={share} title="Share">
+
+			<button onclick={share} title="Share" class="cursor-pointer">
 				<Share2 size={13}/>
 			</button>
 		</div>
@@ -123,3 +135,10 @@
 		</div>
 	</div>
 </article>
+
+
+{#if editIssue}
+
+<EditIssue {issue} bind:editIssue/>
+
+{/if}
