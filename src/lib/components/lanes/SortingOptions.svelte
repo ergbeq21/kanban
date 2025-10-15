@@ -10,7 +10,7 @@
 <div class="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
 	<dialog
 		open
-		class="bg-white rounded-2xl shadow-2xl p-6 w-[400px] max-w-[90%] m-0 border border-gray-200"
+		class="bg-white rounded-2xl shadow-xl p-6 w-[400px] max-w-[90%] m-0 border border-gray-200"
 		style="position: static; transform: none;"
 	>
 		<h2 class="text-lg font-semibold mb-5 text-gray-900 text-center">
@@ -41,6 +41,7 @@
 				}`}
 			>
 				<span class="font-medium text-sm">Created Date</span>
+                
 				<p class="text-xs text-gray-500">Newest → Oldest</p>
 			</button>
 		</div>

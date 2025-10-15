@@ -58,7 +58,7 @@
 </script>
 
 
-<div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+<div class="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
 	<dialog 
 		open 
 		class="bg-white rounded-2xl shadow-xl p-6 w-[500px] max-w-[90%] m-0"
