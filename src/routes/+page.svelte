@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from "svelte";
+	import { onMount } from "svelte";
 	import AddNewIssue from "$lib/components/AddNewIssue.svelte";
 	import LaneCard from "$lib/components/lanes/LaneCard.svelte";
 	import Header from "$lib/components/Header.svelte";
@@ -11,19 +11,19 @@
 
 	let createIssue = $state(false);
 
-    onMount(() => {
+	onMount(() => {
 		doList = JSON.parse(localStorage.getItem("doList") || "[]");
 		doingList = JSON.parse(localStorage.getItem("doingList") || "[]");
 		doneList = JSON.parse(localStorage.getItem("doneList") || "[]");
 		archiveList = JSON.parse(localStorage.getItem("archiveList") || "[]");
 	});
 
-    $effect(()=>{
-        localStorage.setItem("doList", JSON.stringify(doList));
-	    localStorage.setItem("doingList", JSON.stringify(doingList));
-	    localStorage.setItem("doneList", JSON.stringify(doneList));
-	    localStorage.setItem("archiveList", JSON.stringify(archiveList));
-    })
+	$effect(() => {
+		localStorage.setItem("doList", JSON.stringify(doList));
+		localStorage.setItem("doingList", JSON.stringify(doingList));
+		localStorage.setItem("doneList", JSON.stringify(doneList));
+		localStorage.setItem("archiveList", JSON.stringify(archiveList));
+	});
 
 	function dragOver(event) {
 		event.preventDefault();
@@ -64,13 +64,24 @@
 		doingList = [...doingList, item];
 	}
 
-	function dropToDone(event) {
+	async function dropToDone(event) {
 		event.preventDefault();
 		const itemData = event.dataTransfer.getData("text/plain");
 		if (!itemData) return;
 
 		const item = JSON.parse(itemData);
 		if (doneList.find(i => i.id === item.id)) return;
+
+		// Notification logic
+		let permission = Notification.permission;
+		if (permission !== "granted") {
+			permission = await Notification.requestPermission();
+		}
+		if (permission === "granted") {
+			new Notification("Task " + item.title + " is completed", {
+				body: item.description
+			});
+		}
 
 		removeFromAllLists(item.id);
 		doneList = [...doneList, item];

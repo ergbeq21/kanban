@@ -1,6 +1,6 @@
 <script>
 	import { exportAsICS } from '$lib/utils/export';
-	import { Trash2, Share2, Calendar,SquarePen } from 'lucide-svelte';
+	import { Trash2, Share2, Calendar, SquarePen } from 'lucide-svelte';
 	import { format, formatDistanceToNow, isPast } from 'date-fns';
 	import EditIssue from './EditIssue.svelte';
 
@@ -28,25 +28,6 @@
 			} else {
 				isDueDateWarning = false;
 			}
-		}
-	});
-
-	// notification
-	async function notify() {
-		let permission = Notification.permission;
-		if (permission !== "granted") {
-			permission = await Notification.requestPermission();
-		}
-		if (permission === "granted") {
-			new Notification("Task " + issue?.title + " is completed", {
-				body: issue?.description
-			});
-		}
-	}
-
-	$effect(() => {
-		if (lane === "done") {
-			notify();
 		}
 	});
 
