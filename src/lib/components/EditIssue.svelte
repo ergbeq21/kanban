@@ -1,21 +1,44 @@
 <script>
-    import { AlertCircle } from "lucide-svelte";
-    import { v1 as uuidv1 } from 'uuid';
+	import { AlertCircle } from "lucide-svelte";
+	import { v1 as uuidv1 } from 'uuid';
 
-    let { issue, editIssue=$bindable()} = $props();
+	let { issue, editIssue = $bindable(), list = $bindable() } = $props();
 
-    let title = $state(issue.title);
-    let description = $state(issue.description);
-    let dueDate = $state(issue.dueDate);
-    let storyPoints = $state(issue.storyPoints);
-    let priority = $state(issue.priority);
+	let title = $state(issue.title);
+	let description = $state(issue.description);
+	let dueDate = $state(issue.dueDate);
+	let storyPoints = $state(issue.storyPoints);
+	let priority = $state(issue.priority);
 
-    let isValid = $state(false);
-    let dueDateError = $state("");
+	let isValid = $state(false);
+	let dueDateError = $state("");
 
+	$effect(()=>{
+		if (!title.trim()) return false;
+		if (dueDate && new Date(dueDate) < new Date()) {
+			dueDateError = "Due date cannot be in the past.";
+			return false;
+		}
+		dueDateError = "";
+		return true;
+	})
 
+	function saveUpdatedIssue() {
+
+		const updatedIssue = {
+			...issue,
+			title: title.trim(),
+			description: description.trim(),
+			dueDate,
+			storyPoints: Number(storyPoints),
+			priority,
+			updatedAt: new Date().toISOString()
+		};
+
+		list = list.map((i) => (i.id === issue.id ? updatedIssue : i));
+		editIssue = false;
+	}
 </script>
-
 
 <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 	<dialog 
@@ -71,7 +94,9 @@
 				Cancel
 			</button>
 			<button 
-				class={`bg-blue-600 hover:bg-blue-700px-4 py-2 rounded-lg text-white transition`}>
+				disabled={dueDateError != ""}
+				onclick={saveUpdatedIssue}
+				class={`${dueDateError != "" ? "bg-gray-300" : "bg-blue-600 hover:bg-blue-700"} px-4 py-2 rounded-lg  text-white transition`}>
 				Save Changes
 			</button>
 		</div>

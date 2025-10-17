@@ -120,6 +120,6 @@
 
 {#if editIssue}
 
-<EditIssue {issue} bind:editIssue/>
+<EditIssue {issue} bind:editIssue bind:list/>
 
 {/if}
