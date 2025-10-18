@@ -13,7 +13,7 @@
 		class="bg-white rounded-2xl shadow-xl p-6 w-[400px] max-w-[90%] m-0 border border-gray-200"
 		style="position: static; transform: none;"
 	>
-		<h2 class="text-lg font-semibold mb-5 text-gray-900 text-center">
+		<h2 class="text-lg font-semibold mb-5 text-gray-900 text-left">
 			Sort Issues By
 		</h2>
 
@@ -48,7 +48,7 @@
 
 		<div class="flex justify-end mt-6">
 			<button
-				class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition"
+				class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 cursor-pointer hover:text-gray-800 hover:bg-gray-300 rounded-md transition"
 				onclick={close}
 			>
 				Cancel
